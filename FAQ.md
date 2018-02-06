@@ -1,63 +1,56 @@
-# FAQ
-## I am new to the Apollo project, where do I start?
-You have several options:
+1. Matrix API
+===
+1.1 MatrixOperFunctor
+---
+##1.1.1 Interface##
+[MATRIX_StatusT](http://www.baidu.com) MATRIX_StatusT MatrixOperFunctor::[Init](#1)(const AIConfig& config, const vector<AIModelDescription>& model_desc) 
+初始化写操作的参数.
+MATRIX_StatusT Destroy(const AIConfig& config) 
+实现自定义写操作.
+MATRIX_StatusT MatrixWriteInterface::GetOperDescriptor(AIOPDescription& desc) = 0
+获取该Op操作的描述符.
 
-- To build apollo on your computer, start by reviewing the [README.md](https://github.com/ApolloAuto/apollo/blob/master/README.md)
+##1.1.2 function##
+<h4 id="1">`MatrixOperFunctor::Init`</h4>
+    Parameters
+        Config
+            - OP操作所需要的参数以key/value形式传递
+    
+    Returns
+        参见enum MATRIX_StatusT定义
+        
+    Description
+        用户通过实现该纯虚函数，完成对自定义写操作的初始化，例如，用户可以设置写入的路径等。
+        
+    MATRIX_StatusT MatrixWriteInterface::Write(vector<shared_ptr<IAITensor>> msg_input,AIContext& context)
+    
+    Parameters
+        msg_input
+            - 待处理的结果内容.
+        
+        context
+            - reserved，保留.用户实现Write函数时，不需要关心该参数.
+    
+    Returns
+        参见enum MATRIX_StatusT定义
+        
+    Description
+        用户通过实现该纯虚函数，完成对自定义写操作的具体实现，例如，用户可以实现写文件的具体操作方式.
+        
+    MATRIX_StatusT MatrixWriteInterface::GetOperDescriptor(AIOPDescription& desc)
+    
+    Parameters
+        desc
+            - 该操作的描述符.例如，该操作接受的输入内容的格式.
+    
+    Returns
+        参见enum MATRIX_StatusT定义
+        
+    Description
+        用户通过实现该纯虚函数，提供该操作接受的输入内容的格式.在判断前后两个节点是否可以连接时使用.
 
-- To run the Apollo demo offline, go to: [Apollo README.md](https://github.com/ApolloAuto/apollo/blob/master/docs/demo_guide/README.md).
 
-- To install and build Apollo on a vehicle, go to: [Apollo 2.0 quick start](https://github.com/ApolloAuto/apollo/blob/master/docs/quickstart/apollo_2_0_quick_start.md).
 
-- To build the Apollo Kernel, the Robot Operating System (ROS), and Apollo, go to: [apollo/docs/quickstart/apollo_1_0_quick_start_developer.md](https://github.com/ApolloAuto/apollo/blob/master/docs/quickstart/apollo_1_0_quick_start_developer.md) and refer to [build kernel](https://github.com/ApolloAuto/apollo/blob/master/docs/quickstart/apollo_1_0_quick_start_developer.md#build-the-apollo-kernel).
 
-## How to debug build problems?
-1. Carefully review the instructions in the documentation for the option that you selected to get started with the Apollo project.
 
-2. Make sure that you follow the steps in the document exactly as they are written.
-
-3. Use Ubuntu 14.04 as the build can only be implemented using Linux.
-
-4. Verify that the Internet setting is correct on your computer.
-
-5. Allocate more than 1GB of memory, at the recommended minimum, for your computer.
-
-6. If roscore cannot start in apollo docker, you may need to tune the master start timeout value in ROS. You may want to check a related user-reported [issue](https://github.com/ApolloAuto/apollo/issues/2500) for more details.
-
-## If I cannot solve my build problems, what is the most effective way to ask for help?
-Many build problems are related to the environment settings. 
-
-1. Run the script to get your environment: `bash scripts/env.sh >& env.txt` 
-
-2. Provide the content of env.txt in your post.
-
-## Which ports must be whitelisted to run Apollo in a public cloud instance?
-Use these ports for HMI and Dreamview:
-- 8888: Dreamview
-
-## Why there is no ROS environment in dev docker?
-The ROS package is downloaded when you start to build apollo: 
-`bash apollo.sh build`. 
-
-1. Run the following command inside Docker to set up the ROS environment after the build is complete: 
-`source /apollo/scripts/apollo_base.sh`
-
-2. Run ROS-related commands such as rosbag, rostopic and so on.
-
-## How do I clean the existing build output?
-Follow these steps:
-
-1. Log into Docker using the command:
-`bash docker/scripts/dev_into.sh`
-
-2. Run the command:
-`bash apollo.sh clean`
-
-## How do I delete the downloaded third party dependent packages?
-Follow these steps:
-
-1. Log into Docker using the command:
-`bash docker/scripts/dev_into.sh`
-
-2. Run the command:
-`bazel clean --expunge`
-The build command, `bash apollo.sh build`, then downloads all of the dependent packages according to the *WORKSPACE* file.
+[TOC]
